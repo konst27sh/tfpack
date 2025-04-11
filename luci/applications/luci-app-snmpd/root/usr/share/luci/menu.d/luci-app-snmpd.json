@@ -1,0 +1,12 @@
+{
+	"admin/services/snmp": {
+		"title": "SNMPD",
+		"action": {
+			"type": "view",
+			"path": "snmpd/snmp"
+		},
+		"depends": {
+			"uci": { "snmpd":  true }
+		}
+	}
+}

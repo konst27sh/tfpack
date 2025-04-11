@@ -1,0 +1,20 @@
+config input 'tamper'
+	option state '1'
+	option alarm_state 'short'
+	option type 'build-in'
+
+config input 'sensor1'
+	option state '1'
+	option alarm_state 'short'
+	option type 'build-in'
+
+config input 'sensor2'
+	option state '1'
+	option alarm_state 'short'
+	option type 'build-in'
+
+config output 'relay'
+	option state 'open'
+
+config sht 'SHT01'
+	option connected '1'

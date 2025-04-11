@@ -1,0 +1,15 @@
+{
+  "luci-app-tfortis-tfdm": {
+    "description": "Grant UCI access to LuCI app tfortis-tfdm",
+    "read": {
+      "uci": [
+        "tf_device_monitor"
+      ]
+	},
+    "write": {
+      "uci": [
+        "tf_device_monitor"
+      ]
+    }
+  }
+}

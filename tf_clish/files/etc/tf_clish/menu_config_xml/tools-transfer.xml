@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+    <VIEW name="main">
+        <COMMAND name="tools transfer_file"
+                 help=" send / receive file">
+            <PARAM name="protocol"
+                   help="Flood ping"
+                   optional="false"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="protocolValue"
+                           optional="false"
+                           help="filter name"
+                           ptype="TRANSFER_PROTOCOL"/>
+            </PARAM>
+            <PARAM name="local_file"
+                   test='-n "$protocolValue"'
+                   help="Duplicate address detection mode"
+                   optional="false"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="local_fileValue"
+                           optional="false"
+                           help="filter name"
+                           ptype="TRANSFER_LOCAL_FILE"/>
+            </PARAM>
+            <PARAM name="action"
+                   test='"${local_fileValue}" = "backup"'
+                   help="Duplicate address detection mode"
+                   optional="false"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="actionValue"
+                           optional="false"
+                           help="filter name"
+                           ptype="PUT_GEN_TRANSFER_ACTION"/>
+            </PARAM>
+            <PARAM name="remote_file"
+                   test='"${actionValue}" != "put"'
+                   help="Duplicate address detection mode"
+                   optional="false"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="remote_fileValue"
+                           optional="false"
+                           help="- file path to remote distillation"
+                           ptype="STRING"/>
+            </PARAM>
+            <PARAM name="host"
+                   help="Duplicate address detection mode"
+                   optional="false"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="hostValue"
+                           optional="false"
+                           help="filter name"
+                           ptype="IP_ADDR"/>
+            </PARAM>
+
+            <PARAM name="user_name"
+                   test='"${protocolValue}" = "sftp"'
+                   help="Duplicate address detection mode"
+                   optional="false"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="user_Value"
+                           optional="false"
+                           help="- file path to remote destination"
+                           ptype="STRING"/>
+            </PARAM>
+            <PARAM name="password"
+                   test=' -n "${user_Value}"'
+                   help="Duplicate address detection mode"
+                   optional="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="pass_Value"
+                           optional="false"
+                           help="- file path to remote distillation"
+                           ptype="STRING"/>
+            </PARAM>
+            <ACTION>
+                if [[ "${protocolValue}" = "tftp" ]]; then
+                    cmd=""
+                    actionValue1=""
+                    if [[ "${local_fileValue}" = "log" ]]; then
+                        actionValue1="$actionValue1 put"
+                    fi
+
+                    if [[ "${local_fileValue}" = "certificate" || "${local_fileValue}" = "firmware" ]]; then
+                        actionValue1="$actionValue1 get"
+                    fi
+
+                    cmd="${protocolValue} ${actionValue} $actionValue1 ${local_fileValue}"
+
+                    if [[ -z "${remote_fileValue}" ]]; then
+                        cmd="$cmd "no_file" ${hostValue}"
+                    fi
+
+                    if [[ -n "${remote_fileValue}" ]]; then
+                        cmd="$cmd ${remote_fileValue} ${hostValue}"
+                    fi
+
+                    /etc/tf_clish/scripts/tools/transfer_file.lua $cmd
+                fi
+
+                if [[ "${protocolValue}" = "sftp" ]]; then
+                    cmd= ""
+                    if [[ -n "${user_Value}" ]]; then
+                        cmd="$cmd ${user_Value} "
+                    fi
+
+                    if [[ -n "${pass_Value}" ]]; then
+                        cmd="$cmd ${pass_Value} "
+                        /etc/tf_clish/scripts/tools/transfer_file.lua $cmd
+                    else
+                        /etc/tf_clish/scripts/tools/getPass_trf.sh $cmd
+                    fi
+                fi
+
+            </ACTION>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>

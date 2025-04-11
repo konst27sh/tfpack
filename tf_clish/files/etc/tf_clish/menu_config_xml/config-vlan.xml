@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+    <VIEW name="main">
+		<COMMAND name="network vlan"
+             help="VLAN configure and show status">
+            <PARAM name="config"
+                   test='"${access_level}" = "admin"'
+                   help="configure VLAN"
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="vlanid"
+                       test='-z "${mngt_vlan}"'
+                       help="VID"
+                       optional="true"
+                       oder = "true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="vlanidValue"
+                           optional="false"
+                           help="VID value"
+                           ptype="VLAN_ID_LIST">
+                        <PARAM name="action"
+                               test='-n "${vlanidValue}"'
+                               optional="true"
+                               oder = "false"
+                               mode="subcommand"
+                               ptype="SUBCOMMAND"
+                               help="- vlan action add / edit / delete">
+                            <PARAM name="vlanid_actionValue"
+                                   optional="false"
+                                   help=" - add / edit / delete"
+                                   ptype="VLAN_ACTION"/>
+                            <PARAM name="taggedTypeValue"
+                                   test='${vlanid_actionValue} != "delete" -a ${vlanid_actionValue} != "edit"'
+                                   optional="true"
+                                   help="tagged / untagged"
+                                   ptype="VLAN_TAGGED_TYPE_ADD"/>
+                            <PARAM name="taggedTypeValue"
+                                   test='${vlanid_actionValue} != "delete" -a ${vlanid_actionValue} = "edit"'
+                                   optional="true"
+                                   help="tagged / untagged"
+                                   ptype="VLAN_TAGGED_TYPE_EDIT"/>
+                        </PARAM>
+
+                        <PARAM name="ports"
+                               test='-n "${taggedTypeValue}"'
+                               help="vlan port list"
+                               optional="false"
+                               order="true"
+                               mode="subcommand"
+                               ptype="SUBCOMMAND">
+                            <PARAM name="vlanPortListValue"
+                                   help="vlan port list value"
+                                   ptype="PORT_NUM_LIST_1_10"/>
+                        </PARAM>
+
+                        <PARAM name="state"
+                               test='-z "${action}"'
+                               help="set vlan state"
+                               optional="true"
+                               order="false"
+                               mode="subcommand"
+                               ptype="SUBCOMMAND">
+                            <PARAM name="vlanStateValue"
+                                   help="vlan state value"
+                                   ptype="STATE_DE"/>
+                        </PARAM>
+
+                        <PARAM name="name"
+                               test='-z "${action}"'
+                               help="set vlan name"
+                               optional="true"
+                               order="false"
+                               mode="subcommand"
+                               ptype="SUBCOMMAND">
+                            <PARAM name="vlanNameValue"
+                                   help="vlan name value"
+                                   ptype="STRING"/>
+                        </PARAM>
+                    </PARAM>
+                </PARAM>
+
+                <PARAM name="mngt_vlan"
+                       test='-z "${vlanid}"'
+                       help="configure mngt VLAN"
+                       optional="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+
+                    <PARAM name="action"
+                           help="action: add, edit, delete"
+                           optional="false"
+                           order="true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="action_value"
+                               help=" action value: add, edit, delete"
+                               ptype="ACTION_TYPE"/>
+                    </PARAM>
+
+                    <PARAM name="ifname"
+                           test='-n "${action}"'
+                           help=" - interface name"
+                           optional="false"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="ifname_value"
+                               help=" - if name value"
+                               ptype="STRING"/>
+                    </PARAM>
+
+                    <PARAM name="vlan_id"
+                           test='-n "${ifname}" -a ${action_value} != "delete"'
+                           help=" - set vlan id"
+                           optional="false"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="vlan_id_value"
+                               help=" -- vlan id value"
+                               ptype="VLAN_ID"/>
+                    </PARAM>
+                </PARAM>
+            </PARAM>
+
+            <PARAM name="show"
+                   help="show VLAN configuration"
+                   test='-z "${config}"'
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="configuration"
+                       help="show VLAN configuration"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="vlan_id"
+                           test='-z "${all}"'
+                           help="show VLAN configuration for specified VLAN ID"
+                           optional="true"
+                           oder = "true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="vlanidValue"
+                               optional="false"
+                               help="VID value"
+                               ptype="VLAN_ID_LIST"/>
+                    </PARAM>
+                    <PARAM name="all"
+                           test='-z "${vlan_id}"'
+                               help="show VLAN configuration for all VLANs"
+                               optional="false"
+                               oder = "true"
+                               mode="subcommand"
+                               ptype="SUBCOMMAND">
+                    </PARAM>
+                </PARAM>
+            </PARAM>
+
+            <ACTION>
+                if [[ -n "${config}" ]]; then
+                    if [[ "${vlanid_actionValue}" = "add" ]]; then
+                        /etc/tf_clish/scripts/vlan/main_vlan.lua "vlan_id" ${vlanidValue} "add" ${taggedTypeValue} ${vlanPortListValue}
+                    fi
+
+                    if [[ "${vlanid_actionValue}" = "edit" ]]; then
+                        /etc/tf_clish/scripts/vlan/main_vlan.lua "vlan_id" ${vlanidValue} "edit" ${taggedTypeValue} ${vlanPortListValue}
+                    fi
+
+                    if [[ "${vlanid_actionValue}" = "delete" ]]; then
+                        /etc/tf_clish/scripts/vlan/main_vlan.lua "vlan_id" ${vlanidValue} "delete" "not_member" 0-0
+                    fi
+
+                    if [[ -n "${name}" ]]; then
+                        /etc/tf_clish/scripts/vlan/main_vlan.lua "vlan_id" ${vlanidValue} "name" ${vlanNameValue} 0-0
+                    fi
+
+                    if [[ -n "${state}" ]]; then
+                        /etc/tf_clish/scripts/vlan/main_vlan.lua "vlan_id" ${vlanidValue} "state" ${vlanStateValue} 0-0
+                    fi
+
+                    if [[ -n "${mngt_vlan}" ]]; then
+                        if [[ -n "${vlan_id_value}" ]]; then
+                            /etc/tf_clish/scripts/vlan/main_vlan.lua "mngt_vlan" ${ifname_value} ${vlan_id_value} ${action_value}
+                        fi
+                        if [[ -z "${vlan_id_value}" ]]; then
+                            /etc/tf_clish/scripts/vlan/main_vlan.lua "mngt_vlan" ${ifname_value} "1001" ${action_value}
+                        fi
+                    fi
+                fi
+
+                if [[ -n "${show}" ]]; then
+                    if [[ -n "${configuration}" ]]; then
+                        if [[ -n "${vlan_id}" ]]; then
+                             /etc/tf_clish/scripts/vlan/main_vlan.lua "vlan_id" "${vlanidValue}" "show" "" "all"
+                        fi
+
+                        if [[ -n "${all}" ]]; then
+                            /etc/tf_clish/scripts/vlan/main_vlan.lua "vlan_id" "all"  "show" "" "all"
+                        fi
+
+                    fi
+                fi
+            </ACTION>
+		</COMMAND>
+    </VIEW>
+</CLISH_MODULE>

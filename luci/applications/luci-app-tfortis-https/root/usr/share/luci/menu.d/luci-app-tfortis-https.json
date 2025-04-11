@@ -1,0 +1,13 @@
+{
+  "admin/security/ssh/https": {
+    "title": "HTTPs",
+    "order": 3,
+    "action": {
+      "type": "view",
+      "path": "security/https"
+    },
+    "depends": {
+      "acl": [ "luci-app-tfortis-https" ]
+    }
+  }
+}

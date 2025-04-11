@@ -1,0 +1,13 @@
+{
+  "admin/statistics/fdb": {
+    "title": "ARP/MAC Table",
+    "order": 3,
+    "action": {
+      "type": "view",
+      "path": "statistics/fdb"
+    },
+    "depends": {
+      "acl": [ "luci-app-tfortis-mac" ]
+    }
+  }  
+}

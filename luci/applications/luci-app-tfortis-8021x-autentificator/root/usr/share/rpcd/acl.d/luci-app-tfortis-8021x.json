@@ -1,0 +1,38 @@
+{
+  "luci-app-tfortis-8021x": {
+    "description": "Grant UCI access to LuCI app tfortis-8021x",
+    "read": {
+      "uci": [
+        "port",
+        "luci",
+        "network"
+      ],
+      "ubus": {
+        "uci": [
+          "get"
+        ],
+        "hostapd.*": [
+          "get_status",
+          "get_clients"
+        ],
+        "luci": [
+          "getBuiltinEthernetPorts"
+        ]
+      },
+      "file": {
+        "/etc/radius": [ "list" ],
+        "/usr/sbin/bridge": [ "exec" ]
+      }
+    },
+    "write": {
+      "ubus": {
+        "uci": [
+          "set", "commit"
+        ]
+      },
+      "uci": [
+        "port"
+      ]
+    }
+  }
+}

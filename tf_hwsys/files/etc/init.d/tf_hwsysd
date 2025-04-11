@@ -1,0 +1,33 @@
+#!/bin/sh /etc/rc.common
+
+START=21
+STOP=01
+USE_PROCD=1
+PROG=/usr/bin/tf_hwsysd
+
+start_service() {
+	logger "start_service"
+	procd_open_instance
+	procd_set_param command "$PROG"
+	procd_set_param respawn
+	procd_close_instance
+}
+
+get_interface_config(){
+	local ipaddr
+	config_get ipaddr $1 ipaddr
+	if [ $ipaddr == '192.168.0.1' ]; then
+		logger "ipaddr $ipaddr"
+		ubus call tf_hwsys setParam '{"name":"DEFAULT_LED","value":"1"}'
+	fi
+}
+
+reload_service() {
+   logger "reload_service"
+   config_load network
+   config_foreach get_interface_config interface
+}
+
+service_triggers() {
+	procd_add_reload_trigger network interface
+}

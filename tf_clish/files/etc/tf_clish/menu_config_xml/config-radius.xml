@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+    <VIEW name="main">
+        <!--===================================================-->
+        <COMMAND name="special radius"
+                 help="radius - configure and show status">
+            <PARAM name="config"
+                   test='"${access_level}" = "admin"'
+                   help=" configure radius"
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="general"
+                       test='-z "${ports}" -a -z "${log}"'
+                       help="general settings"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+
+                    <PARAM name="state"
+                           help="set state"
+                           optional="true"
+                           order="true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="state_value"
+                               help=" - state"
+                               ptype="STATE"/>
+                    </PARAM>
+
+                    <PARAM name="eap_reauth_period"
+                           help='set EAP reauthentication period'
+                           optional="true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="eap_reauth_period_value"
+                               help=" - EAP reauthentication period"
+                               ptype="UINT"/>
+                    </PARAM>
+                    <PARAM name="ca_cert"
+                           help="(PEM or DER file) for EAP-TLS/PEAP/TTLS"
+                           optional="true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="ca_cert_value"
+                               help=" - file name to CA certificate"
+                               ptype="STRING"/>
+                    </PARAM>
+                    <PARAM name="server_cert"
+                           help="(PEM or DER file) for EAP-TLS/PEAP/TTLS"
+                           optional="true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="server_cert_value"
+                               help=" - file name to CA Server certificate"
+                               ptype="STRING"/>
+                    </PARAM>
+                    <PARAM name="private_key"
+                           help="Private key matching with the server certificate for EAP-TLS/PEAP/TTLS. This may point to the same file as server_cert if both certificate and key are included in a single file"
+                           optional="true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="private_key_value"
+                               help=" - file name to Private key"
+                               ptype="STRING"/>
+                    </PARAM>
+                </PARAM>
+
+                <PARAM name="servertype"
+                       test='-z "${general}" -a -z "${ports}" -a -z "${log}"'
+                       help=" - Authentication / Accounting"
+                       optional="true"
+                       order="true"
+                       ptype="SERVER_TYPE"/>
+
+                <PARAM name="server_addr"
+                       test='-z "${general}"  -a -n "${servertype}"'
+                       help='set Authentication/Accounting server address'
+                       optional="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="server_addr_value"
+                           help=" - Authentication server address"
+                           ptype="IP_ADDR"/>
+                </PARAM>
+
+                <PARAM name="server_port"
+                       test='-z "${general}"  -a -n "${servertype}"'
+                       help='set Authentication/Accounting server port'
+                       optional="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="server_port_value"
+                           help=" - Authentication server port"
+                           ptype="UINT"/>
+                </PARAM>
+
+                <PARAM name="server_shared_secret"
+                       test='-z "${general}"  -a -n "${servertype}"'
+                       help='set Authentication/Accounting shared secret'
+                       optional="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="server_shared_secret_value"
+                           help=" - Authentication/Accounting shared secret value"
+                           ptype="STRING"/>
+                </PARAM>
+
+                <PARAM name="ports"
+                       test='-z "${general}" -a -z "${log}" -a -z "${servertype}"'
+                       help=" ports state"
+                       optional="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="portListValue"
+                           optional="false"
+                           order='true'
+                           help=" - port list"
+                           ptype="PORT_NUM_LIST_1_10"/>
+                    <PARAM name="state"
+                           test='-n "${portListValue}"'
+                           help=" - port state"
+                           optional="false"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="ports_state"
+                               help=" - port state"
+                               ptype="STATE"/>
+                    </PARAM>
+                </PARAM>
+
+                <PARAM name="log"
+                       test='-z "${ports}" -a -z "${general}" -a -z "${servertype}"'
+                       help=" log level"
+                       optional="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="level"
+                           test='-n "${log}"'
+                           help=" - log level"
+                           optional="false"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="loglevel_value"
+                               help=" - log level"
+                               ptype="RADIUS_LOG_LEVEL"/>
+                    </PARAM>
+                </PARAM>
+            </PARAM>
+
+            <PARAM name="show"
+                   help="show radius status and configuration"
+                   test='-z "${config}"'
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="status"
+                       help="show radius status"
+                       test='-z "${configuration}" -a -z "${certificate}"'
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="ports"
+                           test='-z "${client}"'
+                           help="show port status"
+                           optional="false"
+                           order='true'
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                        <PARAM name="ifname_value"
+                               help=" - choose port"
+                               ptype="PORT_NUM_LIST_1_10"/>
+                    </PARAM>
+                    <PARAM name="client"
+                           help="show client status"
+                           optional="true"
+                           order="true"
+                           mode="subcommand"
+                           ptype="SUBCOMMAND">
+                    </PARAM>
+                </PARAM>
+                <PARAM name="configuration"
+                       help="show radius settings"
+                       test='-z "${status}" -a -z "${certificate}" -a "${show_access_level}" = "admin"'
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="config_type"
+                           help=" - config type"
+                           optional="false"
+                           ptype="CONFIG_TYPE"/>
+
+                </PARAM>
+                <PARAM name="certificate"
+                       help="show certificates  for radius"
+                       test='-z "${status}" -a -z "${configuration}" -a "${show_access_level}" = "admin"'
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                </PARAM>
+            </PARAM>
+
+            <ACTION>
+                if [[ -n "${config}" ]]; then
+                    if [[ -n "${general}" ]]; then
+                        if [[ -n "${state_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua "general" "enable" ${state_value}
+                        fi
+                        if [[ -n "${eap_reauth_period_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua "general" "eap_reauth_period" ${eap_reauth_period_value}
+                        fi
+                        if [[ -n "${ca_cert_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua "general" "ca_cert" ${ca_cert_value}
+                        fi
+                        if [[ -n "${server_cert_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua "general" "server_cert" ${server_cert_value}
+                        fi
+                        if [[ -n "${private_key_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua "general" "private_key" ${private_key_value}
+                        fi
+                    fi
+                    if [[ -n "${servertype}" ]]; then
+                        if [[ -n "${server_addr_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua ${servertype} "server_addr" ${server_addr_value}
+                        fi
+                        if [[ -n "${server_port_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua ${servertype} "server_port" ${server_port_value}
+                        fi
+                        if [[ -n "${server_shared_secret_value}" ]]; then
+                            /etc/tf_clish/scripts/radius/config_radius.lua ${servertype} "server_shared_secret" ${server_shared_secret_value}
+                        fi
+                    fi
+                    if [[ -n "${ports}" ]]; then
+                        /etc/tf_clish/scripts/radius/config_radius.lua "ports" ${portListValue} ${ports_state}
+                    fi
+                    if [[ -n "${log}" ]]; then
+                        /etc/tf_clish/scripts/radius/config_radius.lua "logger_syslog_level" ${loglevel_value} ""
+                    fi
+                fi
+
+                if [[ -n "${show}" ]]; then
+                    if [[ -n "${configuration}" ]]; then
+                        /etc/tf_clish/scripts/radius/show_radius.lua "configuration" ${config_type}
+                    fi
+                    if [[ -n "${status}" ]]; then
+                        cmd="status ${ifname_value}"
+                        if [[ -n "${client}" ]]; then
+                           cmd="$cmd client"
+                        fi
+                        /etc/tf_clish/scripts/radius/show_radius.lua $cmd
+                    fi
+
+                    if [[ -n "${certificate}" ]]; then
+                        /etc/tf_clish/scripts/radius/show_radius.lua "certificate"
+                    fi
+                fi
+            </ACTION>
+        </COMMAND>
+	</VIEW>
+    <!--=======================================================-->
+</CLISH_MODULE>

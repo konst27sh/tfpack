@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+    <VIEW name="main">
+        <COMMAND name="tools firmware"
+                 help="system update tools and backup">
+            <PARAM name="show"
+                   test='-z "${install}"'
+                   help="create_backup"
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND"/>
+            <PARAM name="install"
+                   test='-z "${show}"'
+                   help="create_backup"
+                   optional="false"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="keep_setting"
+                       help="show user configuration"
+                       optional="false"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="keep_settingValue"
+                               help="keep_setting"
+                               ptype="YES_NO"/>
+                </PARAM>
+                <PARAM name="auto"
+                       test='-n "${keep_setting}"'
+                       help="image remote file was downloaded"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="autoValue"
+                           optional="false"
+                           help="- file name"
+                           ptype="YES_NO"/>
+                </PARAM>
+                <PARAM name="remote_file"
+                       test='-n "${auto}"'
+                       help="image remote file was downloaded"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="remote_fileValue"
+                           optional="false"
+                           help="- file name"
+                           ptype="STRING"/>
+                </PARAM>
+                <PARAM name="host"
+                   test='-n "${remote_fileValue}"'
+                   help="Duplicate address detection mode"
+                   optional="false"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="hostValue"
+                           optional="false"
+                           help="filter name"
+                           ptype="IP_ADDR"/>
+            </PARAM>
+
+            </PARAM>
+
+            <ACTION>
+                if [[ -n "${show}" ]]; then
+                    /etc/tf_clish/scripts/tools/update_and_restore.lua "firmware" "show"
+                fi
+                if [[ -n "${install}" ]]; then
+                    cmd="firmware install keep_setting ${keep_settingValue}"
+
+                    if [[ -n "${auto}" ]]; then
+                       cmd="$cmd auto ${autoValue}"
+                    fi
+
+                    if [[ -n "${remote_file}" ]]; then
+                       cmd="$cmd remote_file ${remote_fileValue}"
+
+                        if [[ -n "${host}" ]]; then
+                            cmd="$cmd host ${hostValue}"
+                        fi
+                    fi
+
+                    /etc/tf_clish/scripts/tools/update_and_restore.lua $cmd
+                fi
+            </ACTION>
+        </COMMAND>
+
+        <COMMAND name="tools backup"
+                 help="system update tools and backup">
+            <PARAM name="show"
+                   test='-z "${apply}" -a -z "${generate}"'
+                   help="create_backup"
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND"/>
+            <PARAM name="apply"
+                   test='-z "${show}" -a -z "${generate}"'
+                   help="create_backup"
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND"/>
+            <PARAM name="generate"
+                   test='-z "${apply}" -a -z "${show}"'
+                   help="create_backup"
+                   optional="false"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND"/>
+            <PARAM name="backup_file"
+                   test=' -z $"{show}"'
+                   help="image remote file was downloaded"
+                   optional="false"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="backup_fileValue"
+                       optional="false"
+                       help="- file name"
+                       ptype="STRING"/>
+            </PARAM>
+            <ACTION>
+                if [[ -n "${generate}" ]]; then
+                    /etc/tf_clish/scripts/tools/update_and_restore.lua "backup" "generate" "${backup_fileValue}"
+                fi
+
+                if [[ -n "${apply}" ]]; then
+                    /etc/tf_clish/scripts/tools/update_and_restore.lua "backup" "apply" "${backup_fileValue}"
+                fi
+
+                if [[ -n "${show}" ]]; then
+                    /etc/tf_clish/scripts/tools/update_and_restore.lua "backup" "show"
+                fi
+            </ACTION>
+        </COMMAND>
+
+        <COMMAND name="tools restore"
+                 help="system update tools and backup">
+            <PARAM name="default"
+                   test='-z "${recovery}"'
+                   help="The system is erasing the configuration partition now and will reboot itself when finished"
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND"/>
+            <PARAM name="recovery"
+                   test='-z "${default}"'
+                   help="The system is currently booting into recovery mode with default settings"
+                   optional="false"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND"/>
+            <PARAM name="auto"
+                   help="auto = yes: perform operation without any question, auto = no: perform operation on interactive mode"
+                   optional="false"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="autoValue"
+                       optional="false"
+                       help="- file name"
+                       ptype="YES_NO"/>
+            </PARAM>
+            <ACTION>
+                if [[ -n "${default}" ]]; then
+                    /etc/tf_clish/scripts/tools/update_and_restore.lua "restore" "default" "${autoValue}"
+                fi
+
+                if [[ -n "${recovery}" ]]; then
+                    /etc/tf_clish/scripts/tools/update_and_restore.lua "restore" "recovery" "${autoValue}"
+                fi
+            </ACTION>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>

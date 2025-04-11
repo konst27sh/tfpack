@@ -1,0 +1,56 @@
+config general
+    option enable '0'
+	option auth_server_addr ''
+	option auth_server_port ''
+	option auth_server_shared_secret ''
+	option acct_server_addr ''
+    option acct_server_port ''
+    option acct_server_shared_secret ''
+	option eap_reauth_period '3600'
+	option ca_cert ''
+	option server_cert ''
+	option private_key ''
+
+config logs
+	option logger_syslog_level 4
+
+config interface 'lan1'
+	option ifname 'lan1'
+	option enable '0'
+
+config interface 'lan2'
+	option ifname 'lan2'
+	option enable '0'
+
+config interface 'lan3'
+	option ifname 'lan3'
+	option enable '0'
+
+config interface 'lan4'
+	option ifname 'lan4'
+	option enable '0'
+
+config interface 'lan5'
+	option ifname 'lan5'
+	option enable '0'
+
+config interface 'lan6'
+	option ifname 'lan6'
+	option enable '0'
+
+config interface 'lan7'
+	option ifname 'lan7'
+	option enable '0'
+
+config interface 'lan8'
+	option ifname 'lan8'
+	option enable '0'
+
+config interface 'lan9'
+	option ifname 'lan9'
+	option enable '0'
+
+config interface 'lan10'
+	option ifname 'lan10'
+	option enable '0'
+

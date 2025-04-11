@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+    <VIEW name="main">
+        <COMMAND name="services igmp"
+                 help="Configure IGMP Snooping and show status">
+            <PARAM name="config"
+                   test='"${access_level}" = "admin"'
+                   help="configure IGMP "
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+
+                <PARAM name="ports"
+                       test = '-z "${global}"'
+                       help="IGMP port settings"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="portValue"
+                           optional="false"
+                           order="true"
+                           help=" - configure IGMP for specific port"
+                           ptype="PORT_NUM_LIST_1_10"/>
+                </PARAM>
+                <PARAM name="global"
+                       test = '-z "${ports}"'
+                       optional="false"
+                       order="true"
+                       help=" - IGMP global settings"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                </PARAM>
+
+                <PARAM name="state"
+                       test='-n "${global}"'
+                       help="Enable IGMP snooping"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="stateValue"
+                           help=" - IGMP Snooping state"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="state"
+                       test='-n "${ports}"'
+                       help="Enable multicast support"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="stateValue"
+                           help=" - IGMP Snooping state"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="drop_v4_unicast"
+                       test='-n "${ports}"'
+                       help="Drop layer 2 multicast frames containing IPv6 unicast packets."
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="dropValue"
+                           help=" in range 1-1024 - max. snooping table size"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="unicast_flood"
+                       test='-n "${ports}"'
+                       help="Enable unicast flooding"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="unicast_floodValue"
+                           help=" unicast flooding"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="multicast_router"
+                       test='-n "${ports}"'
+                       help="Enable Multicast routing"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="multicast_routerValue"
+                           help=" - Multicast routing"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="multicast_to_unicast"
+                       test='-n "${ports}"'
+                       help="Enable Multicast to unicast"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="multicast_to_unicastValue"
+                           help=" - Multicast to unicast"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="fast_leave"
+                       test='-n "${ports}"'
+                       help="Enable multicast fast leave"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="fast_leaveValue"
+                           help=" Enable multicast fast leave"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="max_snooping_table_size"
+                       test='-n "${global}"'
+                       help="Maximum snooping table size"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="table_sizeValue"
+                           help=" - value in range 1-1024"
+                           ptype="UINT"/>
+                </PARAM>
+
+                <PARAM name="multicast_querier"
+                       test='-n "${global}"'
+                       help="Multicast querier"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="multicast_querierValue"
+                           help=" - multicast querier"
+                           ptype="STATE"/>
+                </PARAM>
+
+                <PARAM name="robustness"
+                       test='-n "${global}"'
+                       help="The robustness value allows tuning for the expected packet loss on the network."
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="robustnessValue"
+                           help=" - Robustness in range 2-255 (default 2)"
+                           ptype="UINT"/>
+                </PARAM>
+
+                <PARAM name="query_interval"
+                       test='-n "${global}"'
+                       help="Interval in seconds between multicast general queries"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="query_intervalValue"
+                           help=" - Query Interval in range 30-600 sec.(125 sec. default)"
+                           ptype="UINT"/>
+                </PARAM>
+
+                <PARAM name="query_response_interval"
+                       test='-n "${global}"'
+                       help="The max response time in seconds inserted into the periodic general queries"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="response_intervalValue"
+                           help=" query response interval in range 1-25 sec. and less then query interval (default 10 sec.)"
+                           ptype="UINT"/>
+                </PARAM>
+
+                <PARAM name="last_member_interval"
+                       test='-n "${global}"'
+                       help="The max response time in seconds inserted into group-specific queries sent in response to leave group messages."
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="member_intervalValue"
+                           help=" - Last Member Interval in range 1-25 sec. (default 1 sec.)"
+                           ptype="UINT"/>
+                </PARAM>
+            </PARAM>
+
+            <PARAM name="show"
+                   help="show IGMP status and settings"
+                   test='-z "${config}"'
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="status"
+                       help="show IGMP group"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                </PARAM>
+
+                <PARAM name="configuration"
+                       test='-z "${status}" -a "${show_access_level}" = "admin"'
+                       help="show IGMP settings"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="config_type"
+                           help=" - config type"
+                           optional="false"
+                           ptype="CONFIG_TYPE"/>
+                    <PARAM name="portValue"
+                           test='${config_type}=="ports"'
+                           optional="true"
+                           order="true"
+                           help=" - show IGMP port configuration"
+                           ptype="PORT_NUM_LIST_1_10"/>
+                </PARAM>
+            </PARAM>
+            <ACTION>
+                if [[ -n "${config}" ]]; then
+                    if [[ -n "${global}" ]]; then
+                        cmd_global="global"
+                        if [[ -n "${state}" ]]; then
+                            cmd_global="$cmd_global state ${stateValue}"
+                        fi
+                        if [[ -n "${max_snooping_table_size}" ]]; then
+                            cmd_global="$cmd_global max_snooping_table_size ${table_sizeValue}"
+                        fi
+                        if [[ -n "${multicast_querier}" ]]; then
+                             cmd_global="$cmd_global multicast_querier ${multicast_querierValue}"
+                        fi
+                        if [[ -n "${robustness}" ]]; then
+                              cmd_global="$cmd_global robustness ${robustnessValue}"
+                        fi
+                        if [[ -n "${query_interval}" ]]; then
+                              cmd_global="$cmd_global query_interval ${query_intervalValue}"
+                        fi
+                        if [[ -n "${query_response_interval}" ]]; then
+                              cmd_global="$cmd_global query_response_interval ${response_intervalValue}"
+                        fi
+                        if [[ -n "${last_member_interval}" ]]; then
+                            cmd_global="$cmd_global last_member_interval ${member_intervalValue}"
+                        fi
+                        /etc/tf_clish/scripts/igmp/igmp_config.lua $cmd_global
+                    fi
+
+                     if [[ -n "${ports}" ]]; then
+                        cmd_ports="ports ${portValue}"
+                        if [[ -n "${state}" ]]; then
+                            cmd_ports="$cmd_ports state ${stateValue}"
+                        fi
+
+                        if [[ -n "${drop_v4_unicast}" ]]; then
+                            cmd_ports="$cmd_ports drop_v4 ${dropValue}"
+                        fi
+
+                        if [[ -n "${unicast_flood}" ]]; then
+                            cmd_ports="$cmd_ports unicast_flood ${unicast_floodValue}"
+                        fi
+
+                        if [[ -n "${multicast_router}" ]]; then
+                            cmd_ports="$cmd_ports multicast_router ${multicast_routerValue}"
+                        fi
+
+                        if [[ -n "${multicast_to_unicast}" ]]; then
+                            cmd_ports="$cmd_ports multicast_to_unicast ${multicast_to_unicastValue}"
+                        fi
+
+                        if [[ -n "${fast_leave}" ]]; then
+                            cmd_ports="$cmd_ports fast_leave ${fast_leaveValue}"
+                        fi
+                        /etc/tf_clish/scripts/igmp/igmp_config.lua $cmd_ports
+                    fi
+                fi
+
+                if [[ -n "${show}" ]]; then
+                    if [[  -n "${status}" ]]; then
+                        /etc/tf_clish/scripts/igmp/show_igmp.lua "status"
+                    fi
+
+                    if [[  -n "${configuration}" ]]; then
+                        if [[  -n "${portValue}" ]]; then
+                            /etc/tf_clish/scripts/igmp/show_igmp.lua "config" "${config_type}" "${portValue}"
+                        fi
+                        if [[  -z "${portValue}" ]]; then
+                            /etc/tf_clish/scripts/igmp/show_igmp.lua "config" "${config_type}"
+                        fi
+                    fi
+                fi
+            </ACTION>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>

@@ -1,0 +1,60 @@
+
+config filter
+	option name 'kernel_filter'
+	option facility 'kern'
+	option severity 'alert'
+
+config filter
+	option name 'user_filter'
+	option facility 'user'
+	option severity 'info'
+
+config filter
+	option name 'all_filter'
+	option facility '*'
+	option severity '*'
+
+config filter
+	option name 'port_filter'
+	option facility '*'
+	option severity 'info'
+	option content 'port'
+
+config action
+	option name 'write_memory'
+	option action 'memory'
+
+config action
+	option name 'write_flash'
+	option action 'flash'
+
+config action
+	option name 'send_syslog'
+	option action 'syslog'
+	list log_syslog '192.168.1.2'
+
+config action
+	option name 'send_mail'
+	option action 'email'
+	list log_email 'abelyaev@fort-telecom.ru'
+
+config filter
+	option name 'tf_dm_flash'
+	option facility 'user'
+	option severity 'alert'
+	option progname 'tf_dm'
+
+config rule
+	option filter 'tf_dm_flash'
+	option action 'write_flash'
+
+config rule
+	option filter 'user_filter'
+	option action 'write_memory'
+
+config filter
+	option name 'tf_ar_log'
+	option facility 'user'
+	option severity 'info'
+	option progname 'tf_autorestart'
+

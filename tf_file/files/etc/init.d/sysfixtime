@@ -1,0 +1,84 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2013-2014 OpenWrt.org
+
+START=95
+STOP=90
+
+start() {
+	echo "sysfixtime start"
+	if [[ "$(/etc/init.d/tf_hwsysd status)" == "running" ]]
+	then
+		date -s "$(get_rtc_time)"
+	else
+		sleep 10
+		if [[ "$(/etc/init.d/tf_hwsysd status)" == "running" ]]
+		then
+			local rtc_time="$(get_rtc_time)"
+			echo $(get_rtc_time)
+			date -s "$rtc_time"
+			echo "tf_hwsysd started"
+		else
+			local curtime="$(date +%s)"
+			local maxtime="$(find /etc -type f -exec date -r {} +%s \; | sort -nr | head -n1)"
+			[ $curtime -lt $maxtime ] && date -s @$maxtime
+			logger -t sysfixtime "tf_hwsysd not started, time from /etc '$(date)'"
+		fi
+	fi
+	logger -t sysfixtime "clock_load '$(date)'"
+	echo "clock_load $rtc_time"
+}
+
+stop() {
+echo "sysfixtime stop"
+  set_rtc_time
+  hwclock_save
+}
+
+hwclock_load() {
+    logger -t sysfixtime "hwclock_load '$(date)'"
+}
+
+hwclock_save(){
+    logger -t sysfixtime "hwclock_save '$(date)'"
+}
+
+get_rtc_time(){
+    local status="$(ubus call tf_hwsys getParam '{"name":"RTC_STATUS"}' | grep -o '"RTC_STATUS": "[^"]*"' | awk -F'"' '{print $4}')"
+    local year="$(ubus call tf_hwsys getParam '{"name":"RTC_YEAR"}' | grep -o '"RTC_YEAR": "[^"]*"' | awk -F'"' '{print $4}')"
+    local month="$(ubus call tf_hwsys getParam '{"name":"RTC_MONTH"}' | grep -o '"RTC_MONTH": "[^"]*"' | awk -F'"' '{print $4}')"
+    local day="$(ubus call tf_hwsys getParam '{"name":"RTC_DAY"}' | grep -o '"RTC_DAY": "[^"]*"' | awk -F'"' '{print $4}')"
+    local hour="$(ubus call tf_hwsys getParam '{"name":"RTC_HOUR"}' | grep -o '"RTC_HOUR": "[^"]*"' | awk -F'"' '{print $4}')"
+    local minute="$(ubus call tf_hwsys getParam '{"name":"RTC_MINUTE"}' | grep -o '"RTC_MINUTE": "[^"]*"' | awk -F'"' '{print $4}')"
+    local second="$(ubus call tf_hwsys getParam '{"name":"RTC_SECOND"}' | grep -o '"RTC_SECOND": "[^"]*"' | awk -F'"' '{print $4}')"
+    if [ $status = "1" ]
+    then
+        echo "20$year-$month-$day $hour:$minute:$second"
+    else
+        find_max_time
+    fi
+}
+
+set_rtc_time(){
+  if [ $(date +%Y) -ge "2000" ]
+  then
+	  ubus call tf_hwsys setParam "{\"name\":\"RTC_YEAR\",\"value\":\"$(($(date +%Y) - 2000))\"}"
+  fi
+	sleep 1
+	ubus call tf_hwsys setParam "{\"name\":\"RTC_MONTH\",\"value\":\"$(date +%m)\"}"
+	sleep 1
+	ubus call tf_hwsys setParam "{\"name\":\"RTC_DAY\",\"value\":\"$(date +%d)\"}"
+	sleep 1
+	ubus call tf_hwsys setParam "{\"name\":\"RTC_HOUR\",\"value\":\"$(date +%H)\"}"
+	sleep 1
+	ubus call tf_hwsys setParam "{\"name\":\"RTC_MINUTE\",\"value\":\"$(date +%M)\"}"
+	sleep 1
+	ubus call tf_hwsys setParam "{\"name\":\"RTC_SECOND\",\"value\":\"$(date +%S)\"}"
+}
+
+find_max_time() {
+    local file newest
+    for file in $( find /etc -type f ) ; do
+        [ -z "$newest" -o "$newest" -ot "$file" ] && newest=$file
+    done
+    [ "$newest" ] && date -r "$newest"
+}

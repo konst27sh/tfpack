@@ -1,0 +1,13 @@
+{
+  "admin/security/auth8021x": {
+		"title": "802.1X",
+		"order": 11,
+		"action": {
+			"type": "view",
+			"path": "security/8021x"
+		},
+		"depends": {
+			"acl": [ "luci-app-tfortis-8021x" ]
+		}
+	}
+}

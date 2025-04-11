@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--  =======================================================-->
+    <VIEW name="main">
+        <COMMAND name="special poe"
+                 help="Show PoE information">
+            <PARAM name="show"
+                   help="config"
+                   test='-z "${config}"'
+                   optional="true"
+                   order="true"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="configuration"
+                       test='-z "${status}"'
+                       help="set time up for TIME mode"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                </PARAM>
+                <PARAM name="status"
+                       test='-z "${configuration}"'
+                       help="config"
+                       optional="true"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                </PARAM>
+            </PARAM>
+            <ACTION>
+                if [[ -n "${configuration}" ]]; then
+                /etc/tf_clish/scripts/poe/show_poe.lua "config"
+                fi
+
+                if [[ -n "${status}" ]]; then
+                /etc/tf_clish/scripts/poe/show_poe.lua "status"
+                fi
+            </ACTION>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>

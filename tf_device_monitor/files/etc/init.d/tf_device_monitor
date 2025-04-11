@@ -1,0 +1,66 @@
+#!/bin/sh /etc/rc.common
+
+START=97
+STOP=01
+USE_PROCD=1
+PROG=/usr/bin/tf_device_monitor
+UCI_CONF="network"
+
+logger() {
+  /usr/bin/logger -p debug -t "tf_dm" "$1" "$2"
+}
+
+#with executable
+start_instance() {
+  local section="$1"
+  local enabled
+  local device
+
+  if [[ "$section" == "loopback" ]]; then
+    return 1
+  fi
+
+  config_get_bool enabled "${section}" 'tfdm' 0
+  if [[ "$enabled" == "1" ]]; then
+	  config_get device "${section}" 'device'
+	  procd_open_instance
+	  procd_set_param command $PROG -i $device
+    logger  "$device" "started"
+	  # Send stdout/stderr output to the system log
+	  # Use command logread to see the log
+	  procd_set_param stderr 0
+	  procd_set_param stdout 0
+	  procd_set_param respawn
+	  procd_close_instance
+  fi
+}
+
+stop_instance() {
+  local cfg="$1"
+}
+
+reload_service()
+{
+  echo "Explicitly restarting service, are you sure you need this?"
+  stop
+  start
+}
+
+start_service() {
+  config_load "${UCI_CONF}"
+  config_foreach start_instance 'interface'
+}
+
+service_triggers()
+{
+  procd_add_reload_trigger network
+  logger  "$device" "triggered"
+}
+
+# This is not neccessary here,
+# but we include it for the sake of the example
+stop_service() {
+  echo "stop TFDM"
+  logger  "$device" "stopped"
+}
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <VIEW name="main" prompt="Switch#">
+
+        <COMMAND name="system"
+                 help=" - description, log, switch, syslog, user">
+        </COMMAND>
+
+        <COMMAND name="network"
+                 help=" - ipif, port, vlan">
+        </COMMAND>
+
+         <COMMAND name="services"
+                 help=" - igmp, lldp, smtp, snmp, sntp, stp">
+        </COMMAND>
+
+        <COMMAND name="special"
+                 help=" - autorestart, device_monitor, io, poe, radius">
+        </COMMAND>
+
+        <COMMAND name="tools"
+                 help=" - backup, firmware, ping, restore, transfer_file">
+        </COMMAND>
+
+        <COMMAND name="exit"
+                 help=" - close this session">
+            <ACTION builtin="clish_close"/>
+        </COMMAND>
+
+        <COMMAND name="help"
+                 help=" - help about using TFortis CLI">
+            <ACTION builtin="clish_overview"/>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>
+
+
+

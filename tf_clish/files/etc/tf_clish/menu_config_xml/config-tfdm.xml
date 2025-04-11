@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CLISH_MODULE xmlns="http://clish.sourceforge.net/XMLSchema"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://clish.sourceforge.net/XMLSchema
+                     http://clish.sourceforge.net/XMLSchema/clish.xsd">
+    <!--=======================================================-->
+    <VIEW name="main">
+        <COMMAND name="special device_monitor"
+                 help="Configure and show device monitor">
+            <PARAM name="config"
+                   test='"${access_level}" = "admin" -a -z "${show}"'
+                   help="config device monitor"
+                   optional="true"
+                   order="false"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="ifname"
+                       help="interface name"
+                       optional="false"
+                       oder = "true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="ifnameValue"
+                           optional="false"
+                           help=" - ifname value"
+                           ptype="STRING"/>
+                </PARAM>
+                <PARAM name="state"
+                       est='-n "${ifname}"'
+                       help="set device monitor state"
+                       optional="false"
+                       oder = "true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                    <PARAM name="stateValue"
+                           optional="false"
+                           help=" - state value: enable / disable"
+                           ptype="STATE"/>
+                </PARAM>
+            </PARAM>
+
+            <PARAM name="show"
+                   help="show device monitor configuration"
+                   test='-z "${config}"'
+                   optional="false"
+                   order="false"
+                   mode="subcommand"
+                   ptype="SUBCOMMAND">
+                <PARAM name="configuration"
+                       test='"${show_access_level}" = "admin"'
+                       help="show device monitor  "
+                       optional="false"
+                       order="true"
+                       mode="subcommand"
+                       ptype="SUBCOMMAND">
+                </PARAM>
+            </PARAM>
+
+            <ACTION>
+                if [[ -n "${config}" ]]; then
+                   /etc/tf_clish/scripts/tfdm/tf_dm.lua "config" "${ifnameValue}" "${stateValue}"
+                fi
+
+                if [[ -n "${show}" ]]; then
+                    /etc/tf_clish/scripts/tfdm/tf_dm.lua "show"
+                fi
+            </ACTION>
+        </COMMAND>
+    </VIEW>
+</CLISH_MODULE>

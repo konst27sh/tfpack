@@ -1,0 +1,8 @@
+find /etc/tf_clish -name "*.lua" -exec chmod 0755 {} \;
+find /usr/libexec/rpcd -name "*.*" -exec chmod 0755 {} \;
+find /usr/libexec/network -name "*.*" -exec chmod 0755 {} \;
+find /etc/init.d -name "*" -exec chmod 0755 {} \;
+find /usr/bin  -name "*.sh" -exec chmod 0755 {} \;
+find /usr/share/lua -name "change_hash.lua" -exec chmod 0755 {} \;
+/etc/init.d/rsyslog enable
+exit 0

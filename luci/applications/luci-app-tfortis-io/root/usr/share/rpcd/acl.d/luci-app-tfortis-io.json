@@ -1,0 +1,13 @@
+{
+  "luci-app-tfortis-io": {
+    "description": "Grant UCI access to LuCI app tfortis-io",
+    "read": {
+      "ubus": {
+        "tf_hwsys": [ "getCategory","setParam" ]
+      },
+      "uci": [
+        "tfortis_io"
+      ]
+    }
+  }
+}

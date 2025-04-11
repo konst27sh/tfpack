@@ -1,0 +1,20 @@
+{
+  "luci-app-tfortis-igmp": {
+    "description": "Grant UCI access to LuCI app tfortis-igmp",
+    "read": {
+      "file": {
+        "/usr/share/lua/mdb_module.lua": [ "exec"]
+      }
+    },
+    "write": {
+      "ubus": {
+        "uci": [
+          "set", "commit"
+        ]
+      },
+      "uci": [
+        "port"
+      ]
+    }
+  }
+}

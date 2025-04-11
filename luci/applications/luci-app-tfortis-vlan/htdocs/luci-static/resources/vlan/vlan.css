@@ -1,0 +1,7 @@
+#cbi-network-interface {
+	width: 40%;
+}
+#cbi-network-bridge-vlan div button.cbi-button.cbi-button-edit
+{
+	display: none
+}
